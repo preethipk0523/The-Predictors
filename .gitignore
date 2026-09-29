@@ -1,0 +1,19 @@
+# Environments & secrets
+.venv/
+.env
+*.env
+
+# Data folder (uploaded to Teams only, gitignored)
+data/
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Operating system artifacts
+.DS_Store
+Thumbs.db

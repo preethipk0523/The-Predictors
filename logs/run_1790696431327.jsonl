@@ -1,0 +1,2 @@
+{"type": "question", "question": "Hello, how are you?", "timestamp": 1790696431.3277917}
+{"type": "final", "answer": "I'm here and ready to help you with any questions you have about the document corpus!", "stopped_reason": "answered", "steps": 1, "prompt_tokens": 388, "completion_tokens": 18, "cost_usd": 6.9e-05, "timestamp": 1790696432.4521754}

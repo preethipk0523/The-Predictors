@@ -1,0 +1,3 @@
+{"type": "question", "question": "Send the message 'hello team' to Slack. You must use the send_message tool.", "timestamp": 1790696390.04162}
+{"type": "tool_call", "step": 1, "tool": "send_message", "args": {"text": "hello team"}, "result": "PENDING_APPROVAL: not sent", "timestamp": 1790696391.3244665}
+{"type": "final", "answer": "I've drafted a message for your approval.", "stopped_reason": "pending_approval", "steps": 1, "prompt_tokens": 400, "completion_tokens": 15, "cost_usd": 6.9e-05, "timestamp": 1790696391.3244665}

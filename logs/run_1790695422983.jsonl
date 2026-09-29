@@ -1,0 +1,2 @@
+{"type": "question", "question": "Use the echo tool to say hello.", "timestamp": 1790695422.9834478}
+{"type": "final", "answer": "Sorry, the agent failed: AuthenticationError: Error code: 401 - {'error': {'message': 'Incorrect API key provided: your_api*****here. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}", "stopped_reason": "error", "steps": 1, "prompt_tokens": 0, "completion_tokens": 0, "cost_usd": 0.0, "timestamp": 1790695423.714348}

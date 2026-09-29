@@ -1,0 +1,3 @@
+{"type": "question", "question": "Use the echo tool to say hello", "timestamp": 1790696269.4539149}
+{"type": "tool_call", "step": 1, "tool": "echo", "args": {"text": "hello"}, "result": "ECHO: hello", "timestamp": 1790696270.8897421}
+{"type": "final", "answer": "hello", "stopped_reason": "answered", "steps": 2, "prompt_tokens": 802, "completion_tokens": 15, "cost_usd": 0.000129, "timestamp": 1790696271.9086032}

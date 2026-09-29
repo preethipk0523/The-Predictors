@@ -14,6 +14,8 @@ from app.config import (
     CHAT_MODEL,
     SIMILARITY_THRESHOLD,
 )
+
+REFUSAL_TEXT = "I don't have information about this in the corpus."
 from app.cost_tracker import cost_tracker
 
 SYSTEM_PROMPT = """You are an expert AI assistant and tutor for "The Crystal Ball Instruction Manual" by Stephen Davies.
@@ -66,8 +68,19 @@ class AnswerGenerator:
         # Check if all chunks have very low similarity (clear out-of-scope trigger)
         max_dense = max((c.get("dense_score", 0.0) for c in retrieved_chunks), default=0.0)
         
-        # If highest similarity is extremely low (< 0.20), it is definitively out-of-scope
-        is_definitive_oos = max_dense < 0.20
+        # FAISS always returns top-k chunks, even for unrelated questions.
+        # If even the best chunk is below the threshold, refuse WITHOUT calling the LLM:
+        # the model never sees irrelevant context, so it cannot hallucinate, and it costs $0.
+        if max_dense < SIMILARITY_THRESHOLD:
+            return {
+                "answer": REFUSAL_TEXT,
+                "cited_pages": [],
+                "is_refusal": True,
+                "generation_time_ms": 0.0,
+                "prompt_tokens": 0,
+                "completion_tokens": 0,
+                "cost_usd": 0.0,
+            }
 
         context_text = build_context_block(retrieved_chunks)
 
@@ -121,7 +134,7 @@ User Question: {query}"""
             "not found in the provided",
             "does not contain information",
         ]
-        is_refusal = any(kw in answer_text.lower() for kw in refusal_keywords) or is_definitive_oos
+        is_refusal = any(kw in answer_text.lower() for kw in refusal_keywords)
 
         return {
             "answer": answer_text,

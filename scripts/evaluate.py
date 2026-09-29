@@ -71,8 +71,8 @@ def evaluate_refusal(category: str, is_out_of_scope: bool, answer: str) -> bool:
         "outside the scope",
         "does not contain",
     ]
-    has_refusal_phrase = any(kw in answer.lower() for kw in refusal_keywords)
-    return is_out_of_scope or has_refusal_phrase
+    # Judge the TEXT the user actually sees, not an internal flag.
+    return any(kw in answer.lower() for kw in refusal_keywords)
 
 
 def evaluate_ambiguity(category: str, answer: str) -> bool:

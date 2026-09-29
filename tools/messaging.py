@@ -1,19 +1,50 @@
-"""Messaging integration seam. Connect this function to the course MCP Slack tool."""
-import os
+"""Slack messaging helper with a required human-approval flag.
 
-def send_message(channel: str, message: str, approved: bool = False) -> dict:
-    """Do not send without explicit approval and a configured integration."""
+Compatible with the existing tools.registry.execute_tool(...). It does not
+send anything unless approved=True and SLACK_BOT_TOKEN is configured.
+"""
+from __future__ import annotations
+
+import os
+from typing import Any
+
+
+def send_message(channel: str, message: str, approved: bool = False) -> dict[str, Any]:
+    channel = (channel or "").strip()
+    message = (message or "").strip()
+
     if not approved:
         return {"sent": False, "result": "Human approval is required before sending."}
-    endpoint = os.getenv("SLACK_MCP_ENDPOINT", "").strip()
-    if not endpoint:
+    if not channel or not message:
+        return {"sent": False, "result": "Both channel and message are required."}
+
+    token = os.getenv("SLACK_BOT_TOKEN")
+    if not token:
         return {
             "sent": False,
-            "result": "Slack/MCP is not configured. Set SLACK_MCP_ENDPOINT and connect the course MCP client.",
+            "result": "SLACK_BOT_TOKEN is not configured. No message was sent.",
         }
-    # Intentionally not making a network request: wire in your provided MCP SDK/client here.
-    return {
-        "sent": False,
-        "result": "Approval received, but the MCP client is not implemented in this starter.",
-        "channel": channel,
-    }
+
+    try:
+        from slack_sdk import WebClient
+        from slack_sdk.errors import SlackApiError
+    except ImportError:
+        return {
+            "sent": False,
+            "result": "slack-sdk is not installed. Run: python -m pip install slack-sdk",
+        }
+
+    try:
+        client = WebClient(token=token)
+        response = client.chat_postMessage(channel=channel, text=message)
+        return {
+            "sent": bool(response.get("ok")),
+            "channel": response.get("channel"),
+            "ts": response.get("ts"),
+            "result": "Message sent." if response.get("ok") else "Slack did not confirm delivery.",
+        }
+    except SlackApiError as exc:
+        error = getattr(exc.response, "data", {}).get("error", str(exc))
+        return {"sent": False, "result": f"Slack API error: {error}"}
+    except Exception as exc:
+        return {"sent": False, "result": f"Slack send failed: {exc}"}

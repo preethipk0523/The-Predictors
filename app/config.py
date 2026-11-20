@@ -19,6 +19,10 @@ INDEX_PATH = DATA_DIR / "faiss_index.bin"
 BM25_PATH = DATA_DIR / "bm25.pkl"
 QUESTIONS_PATH = DATA_DIR / "questions.json"
 COST_LOG_PATH = DATA_DIR / "cost_tracker.json"
+FEEDBACK_FILE = DATA_DIR / "feedback.jsonl"
+AUDIT_LOG_FILE = DATA_DIR / "agent_audit.jsonl"
+CHAT_EXPORTS_DIR = DATA_DIR / "chat_exports"
+CHAT_MEMORY_TURNS = 4
 
 # OpenAI Configuration
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
@@ -41,3 +45,8 @@ TOP_K = 7
 DENSE_WEIGHT = 0.65
 BM25_WEIGHT = 0.35
 SIMILARITY_THRESHOLD = 0.25  # Lower bound for considering retrieved chunk relevant
+# Reranking Hyperparameters
+RERANKER_TOP_INITIAL = 20
+RERANKER_TOP_FINAL = 7
+RERANKER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+ENABLE_RERANKER = True

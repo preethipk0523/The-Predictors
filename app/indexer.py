@@ -7,11 +7,17 @@ Generates embeddings using text-embedding-3-small, builds a FAISS IndexFlatIP
 import json
 import pickle
 import time
+import sys
 from pathlib import Path
 from typing import List, Dict, Any, Tuple
 import faiss
 import numpy as np
 from openai import OpenAI
+
+# Ensure root workspace is in sys.path
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
 from app.config import (
     OPENAI_API_KEY,
@@ -35,9 +41,31 @@ def get_openai_client() -> OpenAI:
 
 
 def tokenize_for_bm25(text: str) -> List[str]:
-    """Simple alphanumeric tokenizer for BM25 keyword matching."""
+    """
+    Code-aware, symbol-preserving tokenizer for BM25 keyword matching.
+    Preserves:
+    - Code methods and function syntax (e.g., .dropna(), .iloc, .groupby())
+    - Punctuation symbols such as parentheses () and brackets []
+    - Alphanumeric identifiers and hyphenated terms
+    """
     import re
-    return re.findall(r"\w+", text.lower())
+    if not text:
+        return []
+
+    text_lower = text.lower()
+    # Extract identifiers, method calls, parentheses, brackets, and math notation
+    tokens = re.findall(
+        r"[a-z0-9_]+(?:\.[a-z0-9_]+)*|\.[a-z0-9_]+|\(\)|\[\]|\b[a-z0-9_]+\b",
+        text_lower,
+    )
+
+    # Add explicit aliases for syntax terms to handle colloquial phrasing
+    if "()" in text or "parenthes" in text_lower or "parens" in text_lower:
+        tokens.extend(["()", "parens", "parentheses"])
+    if "[]" in text or "bracket" in text_lower:
+        tokens.extend(["[]", "brackets"])
+
+    return [t for t in tokens if t]
 
 
 def build_and_save_index(force_rebuild: bool = False) -> Tuple[faiss.IndexFlatIP, List[Dict[str, Any]], BM25Okapi]:

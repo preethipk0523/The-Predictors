@@ -26,7 +26,7 @@ if sys.stdout.encoding.lower() != "utf-8":
 
 from app.retriever import retriever
 from app.generator import generator
-from app.agent import agent
+from app.agent import run_agent
 
 QUESTIONS_PATH = ROOT / "data" / "questions.json"
 DEFAULT_OUTPUT_PATH = ROOT / "data" / "eval_results.json"
@@ -151,7 +151,7 @@ def run_evaluation(
         if mode == "agent":
             # Run Autonomous Agent
             try:
-                agent_res = agent.run(question)
+                agent_res = run_agent(question)
                 answer = agent_res.get("answer")
                 cited_pages = agent_res.get("cited_pages", [])
                 retrieved_pairs = {(str(item.get("source", "crystal1 (1).pdf")), str(p)) for p in cited_pages}

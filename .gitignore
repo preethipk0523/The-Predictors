@@ -238,3 +238,5 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 >>>>>>> 522c25941324d0018f55a166df783494d8c58c09
+logs/
+*.pdf

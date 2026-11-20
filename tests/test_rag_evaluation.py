@@ -37,7 +37,7 @@ class RAGEvaluationAndFaithfulnessTests(unittest.TestCase):
     # ==========================================
 
     def test_faithfulness_fully_supported(self):
-        """Verify fully supported answer receives Faithful status and high score."""
+        """Live test: Verify fully supported answer receives Faithful status and high score."""
         context = [
             {"page": 8, "text": "The data-to-wisdom hierarchy has four levels: data, information, knowledge, and wisdom."}
         ]

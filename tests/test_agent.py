@@ -175,7 +175,7 @@ class AgentCoreTests(unittest.TestCase):
             self.assertEqual(out.get("stop_reason"), "repeated_calls_halted")
 
     def test_citation_validation_filters_unsupported_index_pages(self):
-        """Verify that unsupported index pages such as 303 are filtered from cited_pages."""
+        """Live test: Verify that unsupported index pages such as 303 are filtered from cited_pages."""
         agent = AgentAssistant(max_steps=3)
 
         # Step 1: Model calls search_corpus
